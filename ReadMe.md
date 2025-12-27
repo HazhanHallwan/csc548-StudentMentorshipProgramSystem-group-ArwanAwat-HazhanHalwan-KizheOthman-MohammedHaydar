@@ -38,36 +38,141 @@ This storyboard demonstrates the complete user flow and page structure for a web
 - Progress monitoring
 
 ## File Structure
-StudentMentorshipProgramSystem\Web/
-├── META-INF/
-├── WEB-INF/
-│   └── web.xml
-├── assets/
-│   └── styles.css
-├── auth/
-│   ├── login.jsp
-│   └── register.jsp
-├── dashboard/
-│   └── dashboard.jsp
-├── matches/
-│   ├── list.jsp
-│   ├── create.jsp
-│   └── details.jsp
-├── mentors/
-│   ├── list.jsp
-│   └── create.jsp
-├── sessions/
-│   ├── list.jsp
-│   └── create.jsp
-├── students/
-│   ├── list.jsp
-│   ├── create.jsp
-│   ├── edit.jsp
-│   └── details.jsp
-│── index.jsp
-│──ERD_MentorshipSystem.png
-│──schema.sql
-└──ReadMe.md
+StudentMentorshipSystem/
+│
+├── 📂 src/
+│   └── 📂 java/
+│       └── 📂 com/
+│           └── 📂 mentorship/
+│               │
+│               ├── 📂 controller/
+│               │   ├── 📄 LoginServlet.java
+│               │   ├── 📄 LogoutServlet.java
+│               │   ├── 📄 RegisterServlet.java
+│               │   ├── 📄 DashboardServlet.java
+│               │   │
+│               │   ├── 📄 StudentCreateServlet.java
+│               │   ├── 📄 StudentListServlet.java
+│               │   ├── 📄 StudentDetailsServlet.java
+│               │   ├── 📄 StudentEditServlet.java
+│               │   ├── 📄 StudentUpdateServlet.java
+│               │   ├── 📄 StudentDeleteServlet.java
+│               │   │
+│               │   ├── 📄 MentorCreateServlet.java
+│               │   ├── 📄 MentorListServlet.java
+│               │   ├── 📄 MentorDetailsServlet.java
+│               │   ├── 📄 MentorEditServlet.java
+│               │   ├── 📄 MentorUpdateServlet.java
+│               │   ├── 📄 MentorDeleteServlet.java
+│               │   │
+│               │   ├── 📄 MatchCreateServlet.java
+│               │   ├── 📄 MatchListServlet.java
+│               │   ├── 📄 MatchDetailsServlet.java
+│               │   ├── 📄 MatchDeleteServlet.java
+│               │   │
+│               │   ├── 📄 SessionCreateServlet.java
+│               │   ├── 📄 SessionListServlet.java
+│               │   ├── 📄 SessionDetailsServlet.java
+│               │   └── 📄 SessionDeleteServlet.java
+│               │
+│               ├── 📂 model/
+│               │   ├── 📄 User.java
+│               │   ├── 📄 Student.java
+│               │   ├── 📄 Mentor.java
+│               │   ├── 📄 MentorshipMatch.java
+│               │   └── 📄 MentorshipSession.java
+│               │
+│               └── 📂 dao/
+│                   ├── 📄 DBConnection.java
+│                   ├── 📄 UserDAO.java
+│                   ├── 📄 StudentDAO.java
+│                   ├── 📄 MentorDAO.java
+│                   ├── 📄 MatchDAO.java
+│                   └── 📄 SessionDAO.java
+│
+├── 📂 web/
+│   │
+│   ├── 📂 WEB-INF/
+│   │   ├── 📂 lib/
+│   │   │   └── 📄 mysql-connector-j-8.0.33.jar
+│   │   └── 📄 web.xml
+│   │
+│   ├── 📂 auth/
+│   │   ├── 📄 login.jsp
+│   │   └── 📄 register.jsp
+│   │
+│   ├── 📂 dashboard/
+│   │   └── 📄 dashboard.jsp
+│   │
+│   ├── 📂 students/
+│   │   ├── 📄 list.jsp
+│   │   ├── 📄 create.jsp
+│   │   ├── 📄 edit.jsp
+│   │   └── 📄 details.jsp
+│   │
+│   ├── 📂 mentors/
+│   │   ├── 📄 list.jsp
+│   │   ├── 📄 create.jsp
+│   │   ├── 📄 edit.jsp
+│   │   └── 📄 details.jsp
+│   │
+│   ├── 📂 matches/
+│   │   ├── 📄 list.jsp
+│   │   ├── 📄 create.jsp
+│   │   └── 📄 details.jsp
+│   │
+│   ├── 📂 sessions/
+│   │   ├── 📄 list.jsp
+│   │   ├── 📄 create.jsp
+│   │   └── 📄 details.jsp
+│   │
+│   ├── 📂 assets/
+│   │   ├── 📂 css/
+│   │   │   └── 📄 styles.css
+│   │   │
+│   │   ├── 📂 js/
+│   │   │   └── 📄 validation.js (optional)
+│   │   │
+│   │   └── 📂 images/
+│   │       ├── 📄 logo.png (optional)
+│   │       └── 📄 favicon.ico (optional)
+│   │
+│   └── 📄 index.jsp
+│
+├── 📂 database/
+│   ├── 📄 mentorship_system.sql
+│   ├── 📄 sample_data.sql (optional)
+│   └── 📄 database_schema.png (optional)
+│
+├── 📂 documentation/
+│   ├── 📄 README.md
+│   ├── 📄 PROJECT_SETUP.md
+│   ├── 📄 VIDEO_SCRIPT.md
+│   ├── 📄 UML_DIAGRAMS.md
+│   └── 📂 screenshots/
+│       ├── 📄 login_page.png
+│       ├── 📄 dashboard.png
+│       ├── 📄 students_list.png
+│       ├── 📄 mentors_list.png
+│       ├── 📄 matches_list.png
+│       └── 📄 sessions_list.png
+│
+├── 📂 nbproject/ (NetBeans specific)
+│   ├── 📄 project.properties
+│   ├── 📄 project.xml
+│   └── 📄 build-impl.xml
+│
+├── 📂 build/ (Generated)
+│   └── 📂 web/
+│       └── (compiled classes and resources)
+│
+├── 📂 dist/ (Generated)
+│   └── 📄 StudentMentorshipSystem.war
+│
+├── 📄 .gitignore
+└──📄 README.md
+
+
 
 
 ## ERD Location
