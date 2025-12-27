@@ -1,46 +1,72 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.List, com.mentorship.model.Student, com.mentorship.model.Mentor" %>
+<%
+    if (session.getAttribute("userId") == null) {
+        response.sendRedirect(request.getContextPath() + "/auth/login.jsp");
+        return;
+    }
+    
+    List<Student> students = (List<Student>) request.getAttribute("students");
+    List<Mentor> mentors = (List<Mentor>) request.getAttribute("mentors");
+%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Match - Student Mentorship Program</title>
-    <link rel="stylesheet" href="../assets/styles.css">
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/styles.css">
 </head>
 <body>
     <header>
         <h1>Create Mentorship Match</h1>
-        <p>Purpose: Pair a student with an appropriate mentor</p>
         <nav>
-            <a href="list.jsp">← Back to Matches List</a> | 
-            <a href="../dashboard/dashboard.jsp">Dashboard</a>
+            <a href="<%= request.getContextPath() %>/MatchListServlet">← Back to Matches List</a> | 
+            <a href="<%= request.getContextPath() %>/index.jsp">sitemap</a> |
+            <a href="<%= request.getContextPath() %>/DashboardServlet">Dashboard</a>
         </nav>
     </header>
     
     <main>
         <section>
-            <form action="" method="POST" class="form-container">
-                <input type="hidden" name="action" value="createMatch">
-                <h2>Manual Match Creation</h2>
+            <% 
+                String error = (String) request.getAttribute("error");
+                if (error != null) { 
+            %>
+                <div class="alert alert-error"><%= error %></div>
+            <% } %>
+            
+            <form action="<%= request.getContextPath() %>/MatchCreateServlet" method="POST" class="form-container">
+                <h2>Match Creation Form</h2>
                 
                 <div class="form-group">
-                    <label for="studentSelect">Select Student *</label>
-                    <select id="studentSelect" name="studentId" required>
+                    <label for="studentId">Select Student *</label>
+                    <select id="studentId" name="studentId" required>
                         <option value="">-- Choose Student --</option>
-                        <option value="1">John Doe - Computer Science - Year 2</option>
-                        <option value="2">Jane Smith - Engineering - Year 3</option>
-                        <option value="3">Mike Johnson - Business - Year 1</option>
+                        <% if (students != null) {
+                            for (Student student : students) { %>
+                                <option value="<%= student.getStudentId() %>">
+                                    <%= student.getFullName() %> - <%= student.getDepartment() %> (Year <%= student.getYearLevel() %>)
+                                </option>
+                            <% }
+                        } %>
                     </select>
                 </div>
                 
                 <div class="form-group">
-                    <label for="mentorSelect">Select Mentor *</label>
-                    <select id="mentorSelect" name="mentorId" required>
+                    <label for="mentorId">Select Mentor *</label>
+                    <select id="mentorId" name="mentorId" required>
                         <option value="">-- Choose Mentor --</option>
-                        <option value="1">Dr. Sarah Smith - Computer Science (3/5 mentees)</option>
-                        <option value="2">Prof. James Brown - Engineering (2/5 mentees)</option>
-                        <option value="3">Dr. Emily Davis - Business (4/5 mentees)</option>
+                        <% if (mentors != null) {
+                            for (Mentor mentor : mentors) { %>
+                                <option value="<%= mentor.getMentorId() %>">
+                                    <%= mentor.getFullName() %> - <%= mentor.getDepartment() %> 
+                                    (<%= mentor.getCurrentMenteesCount() %>/<%= mentor.getMaxMentees() %> mentees)
+                                </option>
+                            <% }
+                        } %>
                     </select>
+                    <small>Only mentors with available capacity are shown</small>
                 </div>
                 
                 <div class="form-row">
@@ -52,8 +78,8 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="duration">Expected Duration (Months) *</label>
-                        <input type="number" id="duration" name="duration" 
+                        <label for="durationMonths">Expected Duration (Months) *</label>
+                        <input type="number" id="durationMonths" name="durationMonths" 
                                min="1" 
                                max="24" 
                                value="6" 
@@ -64,7 +90,7 @@
                 <div class="form-group">
                     <label for="goals">Mentorship Goals *</label>
                     <textarea id="goals" name="goals" 
-                              rows="4" 
+                              rows="5" 
                               placeholder="Define the primary objectives and expected outcomes of this mentorship..." 
                               required
                               minlength="30"
@@ -72,71 +98,12 @@
                     <small>30-500 characters</small>
                 </div>
                 
-                <div class="form-group">
-                    <label>Priority Areas</label>
-                    <div class="checkbox-list">
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="career" name="priorityAreas" value="Career Development">
-                            <label for="career">Career Development</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="academic" name="priorityAreas" value="Academic Excellence">
-                            <label for="academic">Academic Excellence</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="research" name="priorityAreas" value="Research Skills">
-                            <label for="research">Research Skills</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="technical" name="priorityAreas" value="Technical Skills">
-                            <label for="technical">Technical Skills</label>
-                        </div>
-                    </div>
-                </div>
-                
                 <div class="form-actions">
                     <button type="submit" class="btn-primary">Create Match</button>
                     <button type="reset" class="btn-secondary">Clear Form</button>
-                    <a href="list.jsp" class="btn-cancel">Cancel</a>
+                    <a href="<%= request.getContextPath() %>/MatchListServlet" class="btn-cancel">Cancel</a>
                 </div>
             </form>
-            
-            <div class="ai-suggestions">
-                <h2>AI-Powered Match Suggestions</h2>
-                <p>Use our intelligent algorithm to find the best mentor matches based on skills, interests, and availability.</p>
-                
-                <form action="" method="POST" class="suggestion-form">
-                    <div class="form-group">
-                        <label for="studentForSuggestion">Select Student for Suggestions</label>
-                        <select id="studentForSuggestion" name="studentId">
-                            <option value="">-- Choose Student --</option>
-                            <option value="1">John Doe - Computer Science</option>
-                            <option value="2">Jane Smith - Engineering</option>
-                            <option value="3">Mike Johnson - Business</option>
-                        </select>
-                    </div>
-                    
-                    <button type="submit" class="btn-primary">Get AI Suggestions</button>
-                </form>
-                
-                <div class="suggestion-results">
-                    <h3>Top 3 Suggested Mentors</h3>
-                    <ul class="suggestion-list">
-                        <li>
-                            <strong>Dr. Sarah Smith</strong> - Match Score: 95%
-                            <p>Skills alignment, Career goals compatibility, Available slots</p>
-                        </li>
-                        <li>
-                            <strong>Prof. Michael Chen</strong> - Match Score: 88%
-                            <p>Department match, Research interests alignment</p>
-                        </li>
-                        <li>
-                            <strong>Dr. Lisa Anderson</strong> - Match Score: 82%
-                            <p>Technical skills match, Flexible availability</p>
-                        </li>
-                    </ul>
-                </div>
-            </div>
         </section>
     </main>
     

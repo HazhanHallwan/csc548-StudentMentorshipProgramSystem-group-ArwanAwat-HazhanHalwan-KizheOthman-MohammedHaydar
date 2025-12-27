@@ -5,43 +5,53 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Student Mentorship Program</title>
-    <link rel="stylesheet" href="../assets/styles.css">
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/styles.css">
 </head>
 <body>
     <header>
         <h1>Login</h1>
-        <p>Purpose: User authentication for accessing the mentorship system</p>
-        <nav>
-            <a href="../index.jsp">← Back to Home</a>
-        </nav>
+        <p>Student Mentorship Program System</p>
     </header>
     
     <main>
         <section>
-            <form action="../process" method="POST" class="form-container">
-                <input type="hidden" name="action" value="login">
+            <%-- Display error messages --%>
+            <% if ("invalid".equals(request.getParameter("error"))) { %>
+                <div class="alert alert-error">
+                    Invalid email or password. Please try again.
+                </div>
+            <% } else if ("missing".equals(request.getParameter("error"))) { %>
+                <div class="alert alert-error">
+                    Email and password are required.
+                </div>
+            <% } %>
+            
+            <%-- Display success messages --%>
+            <% if ("success".equals(request.getParameter("registered"))) { %>
+                <div class="alert alert-success">
+                    Registration successful! Please login.
+                </div>
+            <% } else if ("success".equals(request.getParameter("logout"))) { %>
+                <div class="alert alert-info">
+                    You have been logged out successfully.
+                </div>
+            <% } %>
+            
+            <form action="<%= request.getContextPath() %>/LoginServlet" method="POST" class="form-container">
                 <h2>Login to Your Account</h2>
                 
                 <div class="form-group">
                     <label for="email">Email Address *</label>
                     <input type="email" id="email" name="email" 
                            placeholder="Enter your email" 
-                           required 
-                           autocomplete="email">
+                           required>
                 </div>
                 
                 <div class="form-group">
                     <label for="password">Password *</label>
                     <input type="password" id="password" name="password" 
                            placeholder="Enter your password" 
-                           required 
-                           minlength="8"
-                           autocomplete="current-password">
-                </div>
-                
-                <div class="form-group checkbox-group">
-                    <input type="checkbox" id="remember" name="remember" value="yes">
-                    <label for="remember">Remember me</label>
+                           required>
                 </div>
                 
                 <div class="form-group">
@@ -49,8 +59,13 @@
                 </div>
                 
                 <div class="form-footer">
-                    <a href="../dashboard/dashboard.jsp">Forgot Password?</a>
                     <p>Don't have an account? <a href="register.jsp">Register here</a></p>
+                    <p class="test-credentials">
+                        <strong>Test Login:</strong><br>
+                        Email: admin@mentorship.edu<br>
+                        Password: Admin123<br>
+                        <a href="<%= request.getContextPath() %>/index.jsp">sitemap</a> 
+                    </p>
                 </div>
             </form>
         </section>

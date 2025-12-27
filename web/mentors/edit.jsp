@@ -1,25 +1,28 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="com.mentorship.model.Mentor" %>
 <%
     if (session.getAttribute("userId") == null) {
         response.sendRedirect(request.getContextPath() + "/auth/login.jsp");
         return;
     }
+    
+    Mentor mentor = (Mentor) request.getAttribute("mentor");
 %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register Mentor - Student Mentorship Program</title>
+    <title>Edit Mentor - Student Mentorship Program</title>
     <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/styles.css">
 </head>
 <body>
     <header>
-        <h1>Register New Mentor</h1>
+        <h1>Edit Mentor Profile</h1>
         <nav>
-            <a href="<%= request.getContextPath() %>/MentorListServlet">← Back to Mentor List</a> | 
+            <a href="<%= request.getContextPath() %>/MentorDetailsServlet?id=<%= mentor.getMentorId() %>">← Back to Details</a> | 
             <a href="<%= request.getContextPath() %>/index.jsp">sitemap</a> |
-            <a href="<%= request.getContextPath() %>/DashboardServlet">Dashboard</a>
+            <a href="<%= request.getContextPath() %>/MentorListServlet">Mentors List</a>
         </nav>
     </header>
     
@@ -32,38 +35,40 @@
                 <div class="alert alert-error"><%= error %></div>
             <% } %>
             
-            <form action="<%= request.getContextPath() %>/MentorCreateServlet" method="POST" class="form-container">
-                <h2>Mentor Registration Form</h2>
+            <form action="<%= request.getContextPath() %>/MentorUpdateServlet" method="POST" class="form-container">
+                <input type="hidden" name="mentorId" value="<%= mentor.getMentorId() %>">
+                <input type="hidden" name="userId" value="<%= mentor.getUserId() %>">
+                <h2>Edit Mentor Information</h2>
                 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="mentorNumber">Mentor Number *</label>
+                        <label for="mentorNumber">Mentor Number</label>
                         <input type="text" id="mentorNumber" name="mentorNumber" 
-                               placeholder="e.g., MEN2025001" 
-                               required 
-                               pattern="[A-Z]{3}[0-9]{7}">
+                               value="<%= mentor.getMentorNumber() %>" 
+                               readonly 
+                               class="readonly-input">
                     </div>
                     
                     <div class="form-group">
                         <label for="fullName">Full Name *</label>
                         <input type="text" id="fullName" name="fullName" 
-                               placeholder="Dr. Full Name" 
+                               value="<%= mentor.getFullName() %>" 
                                required>
                     </div>
                 </div>
                 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="email">Email Address *</label>
+                        <label for="email">Email *</label>
                         <input type="email" id="email" name="email" 
-                               placeholder="mentor@university.edu" 
+                               value="<%= mentor.getEmail() %>" 
                                required>
                     </div>
                     
                     <div class="form-group">
-                        <label for="phone">Phone Number *</label>
+                        <label for="phone">Phone *</label>
                         <input type="tel" id="phone" name="phone" 
-                               placeholder="+1234567890" 
+                               value="<%= mentor.getPhone() %>" 
                                required>
                     </div>
                 </div>
@@ -72,20 +77,18 @@
                     <div class="form-group">
                         <label for="department">Department *</label>
                         <select id="department" name="department" required>
-                            <option value="">-- Select Department --</option>
-                            <option value="Computer Science">Computer Science</option>
-                            <option value="Engineering">Engineering</option>
-                            <option value="Business">Business</option>
-                            <option value="Mathematics">Mathematics</option>
-                            <option value="Physics">Physics</option>
-                            <option value="Chemistry">Chemistry</option>
+                            <option value="Computer Science" <%= "Computer Science".equals(mentor.getDepartment()) ? "selected" : "" %>>Computer Science</option>
+                            <option value="Engineering" <%= "Engineering".equals(mentor.getDepartment()) ? "selected" : "" %>>Engineering</option>
+                            <option value="Business" <%= "Business".equals(mentor.getDepartment()) ? "selected" : "" %>>Business</option>
+                            <option value="Mathematics" <%= "Mathematics".equals(mentor.getDepartment()) ? "selected" : "" %>>Mathematics</option>
+                            <option value="Physics" <%= "Physics".equals(mentor.getDepartment()) ? "selected" : "" %>>Physics</option>
                         </select>
                     </div>
                     
                     <div class="form-group">
-                        <label for="positionTitle">Position / Title *</label>
+                        <label for="positionTitle">Position/Title *</label>
                         <input type="text" id="positionTitle" name="positionTitle" 
-                               placeholder="e.g., Senior Lecturer, Professor" 
+                               value="<%= mentor.getPositionTitle() %>" 
                                required>
                     </div>
                 </div>
@@ -94,6 +97,7 @@
                     <div class="form-group">
                         <label for="yearsExperience">Years of Experience *</label>
                         <input type="number" id="yearsExperience" name="yearsExperience" 
+                               value="<%= mentor.getYearsExperience() %>" 
                                min="0" 
                                max="50" 
                                required>
@@ -102,9 +106,9 @@
                     <div class="form-group">
                         <label for="maxMentees">Maximum Mentees *</label>
                         <input type="number" id="maxMentees" name="maxMentees" 
+                               value="<%= mentor.getMaxMentees() %>" 
                                min="1" 
                                max="10" 
-                               value="5" 
                                required>
                     </div>
                 </div>
@@ -112,25 +116,20 @@
                 <div class="form-group">
                     <label for="expertiseAreas">Expertise Areas *</label>
                     <input type="text" id="expertiseAreas" name="expertiseAreas" 
-                           placeholder="e.g., AI, Machine Learning, Data Science" 
+                           value="<%= mentor.getExpertiseAreas() %>" 
                            required>
-                    <small>Separate multiple areas with commas</small>
                 </div>
                 
                 <div class="form-group">
-                    <label for="bio">Biography / Background *</label>
+                    <label for="bio">Biography *</label>
                     <textarea id="bio" name="bio" 
                               rows="5" 
-                              placeholder="Brief description of background, research interests, and mentoring philosophy..." 
-                              required
-                              minlength="50"></textarea>
-                    <small>Minimum 50 characters</small>
+                              required><%= mentor.getBio() %></textarea>
                 </div>
                 
                 <div class="form-actions">
-                    <button type="submit" class="btn-primary">Register Mentor</button>
-                    <button type="reset" class="btn-secondary">Clear Form</button>
-                    <a href="<%= request.getContextPath() %>/MentorListServlet" class="btn-cancel">Cancel</a>
+                    <button type="submit" class="btn-primary">Update Mentor</button>
+                    <a href="<%= request.getContextPath() %>/MentorDetailsServlet?id=<%= mentor.getMentorId() %>" class="btn-cancel">Cancel</a>
                 </div>
             </form>
         </section>

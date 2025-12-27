@@ -593,3 +593,215 @@ input:valid:not(:placeholder-shown) {
 input[type="checkbox"]:checked {
     accent-color: #4CAF50;
 }
+/* Alert Messages */
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    font-weight: 600;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.alert-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.alert-info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}
+
+/* KPI Numbers */
+.kpi-number {
+    font-size: 2.5em;
+    font-weight: bold;
+    color: #4CAF50;
+    margin: 10px 0;
+}
+
+/* Details Box */
+.details-box {
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 5px;
+    margin: 15px 0;
+}
+
+.details-box p {
+    margin: 10px 0;
+}
+
+/* Test Credentials */
+.test-credentials {
+    background: #fff3cd;
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 14px;
+    margin-top: 15px;
+}
+
+/* Button Danger */
+.btn-danger {
+    background-color: #dc3545;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 5px;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+}
+/* Badge Styles */
+.badge {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.badge-success {
+    background-color: #28a745;
+    color: white;
+}
+
+.badge-warning {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.badge-info {
+    background-color: #17a2b8;
+    color: white;
+}
+
+.badge-danger {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* Readonly Input */
+.readonly-input {
+    background-color: #e9ecef;
+    cursor: not-allowed;
+}
+
+/* KPI Section */
+.kpi-section {
+    margin: 20px 0;
+}
+
+.kpi-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.kpi-box {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 25px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: transform 0.3s;
+}
+
+.kpi-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+.kpi-box h3 {
+    margin: 0 0 10px 0;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    opacity: 0.9;
+}
+
+/* Action Bar */
+.action-bar {
+    margin: 20px 0;
+    text-align: right;
+}
+
+/* Button Block */
+.btn-block {
+    width: 100%;
+    display: block;
+}
+
+/* Form Footer */
+.form-footer {
+    text-align: center;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #dee2e6;
+}
+
+.form-footer p {
+    margin: 10px 0;
+}
+
+.form-footer a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.form-footer a:hover {
+    text-decoration: underline;
+}
+
+/* Role Badges */
+.role-badge {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.role-admin {
+    background-color: #dc3545;
+    color: white;
+}
+
+.role-mentor {
+    background-color: #17a2b8;
+    color: white;
+}
+
+.role-student {
+    background-color: #28a745;
+    color: white;
+}
+
+/* Permission Alert */
+.alert-info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+    padding: 12px;
+    border-radius: 5px;
+    margin: 15px 0;
+}
+
+.alert-info strong {
+    font-weight: bold;
+}

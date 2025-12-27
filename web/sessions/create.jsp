@@ -1,61 +1,58 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.List, com.mentorship.model.MentorshipMatch" %>
+<%
+    if (session.getAttribute("userId") == null) {
+        response.sendRedirect(request.getContextPath() + "/auth/login.jsp");
+        return;
+    }
+    
+    List<MentorshipMatch> matches = (List<MentorshipMatch>) request.getAttribute("matches");
+%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Schedule Session - Student Mentorship Program</title>
-    <link rel="stylesheet" href="../assets/styles.css">
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/styles.css">
 </head>
 <body>
     <header>
-        <h1>Schedule Mentorship Session</h1>
-        <p>Purpose: Create a new mentorship session appointment</p>
+        <h1>Schedule New Session</h1>
         <nav>
-            <a href="list.jsp">← Back to Sessions List</a> | 
-            <a href="../dashboard/dashboard.jsp">Dashboard</a>
+            <a href="<%= request.getContextPath() %>/SessionListServlet">← Back to Sessions List</a> | 
+            <a href="<%= request.getContextPath() %>/index.jsp">sitemap</a> |
+            <a href="<%= request.getContextPath() %>/DashboardServlet">Dashboard</a>
         </nav>
     </header>
     
     <main>
         <section>
-            <form action="" method="POST" class="form-container">
-                <input type="hidden" name="action" value="createSession">
+            <% 
+                String error = (String) request.getAttribute("error");
+                if (error != null) { 
+            %>
+                <div class="alert alert-error"><%= error %></div>
+            <% } %>
+            
+            <form action="<%= request.getContextPath() %>/SessionCreateServlet" method="POST" class="form-container">
                 <h2>Session Scheduling Form</h2>
                 
                 <div class="form-group">
-                    <label for="matchSelect">Select Match/Pairing *</label>
-                    <select id="matchSelect" name="matchId" required>
-                        <option value="">-- Choose Active Match --</option>
-                        <option value="1">John Doe ↔ Dr. Sarah Smith</option>
-                        <option value="2">Jane Smith ↔ Prof. James Brown</option>
-                        <option value="3">Mike Johnson ↔ Dr. Emily Davis</option>
+                    <label for="matchId">Select Mentorship Match *</label>
+                    <select id="matchId" name="matchId" required>
+                        <option value="">-- Choose Match --</option>
+                        <% if (matches != null) {
+                            for (MentorshipMatch match : matches) { 
+                                if ("active".equals(match.getStatus())) { %>
+                                    <option value="<%= match.getMatchId() %>">
+                                        <%= match.getStudentName() %> ← → <%= match.getMentorName() %>
+                                    </option>
+                                <% }
+                            }
+                        } %>
                     </select>
-                    <small>Or select student and mentor separately below</small>
-                </div>
-                
-                <div class="separator">OR</div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="studentSelect">Student</label>
-                        <select id="studentSelect" name="studentId">
-                            <option value="">-- Select Student --</option>
-                            <option value="1">John Doe</option>
-                            <option value="2">Jane Smith</option>
-                            <option value="3">Mike Johnson</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="mentorSelect">Mentor</label>
-                        <select id="mentorSelect" name="mentorId">
-                            <option value="">-- Select Mentor --</option>
-                            <option value="1">Dr. Sarah Smith</option>
-                            <option value="2">Prof. James Brown</option>
-                            <option value="3">Dr. Emily Davis</option>
-                        </select>
-                    </div>
+                    <small>Only active matches are shown</small>
                 </div>
                 
                 <div class="form-row">
@@ -63,27 +60,35 @@
                         <label for="sessionDate">Session Date *</label>
                         <input type="date" id="sessionDate" name="sessionDate" 
                                required
-                               min="2025-11-22">
+                               min="2025-01-01">
                     </div>
                     
                     <div class="form-group">
                         <label for="sessionTime">Session Time *</label>
                         <input type="time" id="sessionTime" name="sessionTime" 
-                               required
-                               step="900">
-                        <small>15-minute intervals</small>
+                               required>
                     </div>
                 </div>
                 
-                <div class="form-group">
-                    <label for="duration">Duration *</label>
-                    <select id="duration" name="duration" required>
-                        <option value="">-- Select Duration --</option>
-                        <option value="30">30 minutes</option>
-                        <option value="60" selected>60 minutes</option>
-                        <option value="90">90 minutes</option>
-                        <option value="120">120 minutes</option>
-                    </select>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="duration">Duration (Minutes) *</label>
+                        <select id="duration" name="duration" required>
+                            <option value="30">30 minutes</option>
+                            <option value="60" selected>60 minutes</option>
+                            <option value="90">90 minutes</option>
+                            <option value="120">120 minutes</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="locationType">Location Type *</label>
+                        <select id="locationType" name="locationType" required>
+                            <option value="online">Online</option>
+                            <option value="campus">Campus</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
                 </div>
                 
                 <div class="form-group">
@@ -95,56 +100,26 @@
                 </div>
                 
                 <div class="form-group">
-                    <label for="agenda">Agenda / Goals</label>
-                    <textarea id="agenda" name="agenda" 
+                    <label for="locationDetails">Location Details *</label>
+                    <input type="text" id="locationDetails" name="locationDetails" 
+                           placeholder="e.g., Zoom Link, Room 301, Coffee Shop" 
+                           required
+                           maxlength="200">
+                </div>
+                
+                <div class="form-group">
+                    <label for="notes">Session Notes (Optional)</label>
+                    <textarea id="notes" name="notes" 
                               rows="4" 
-                              placeholder="Outline the topics and objectives to be covered in this session..." 
-                              maxlength="500"></textarea>
-                </div>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="locationType">Location Type *</label>
-                        <select id="locationType" name="locationType" required>
-                            <option value="">-- Select Type --</option>
-                            <option value="online" selected>Online</option>
-                            <option value="campus">On Campus</option>
-                            <option value="other">Other</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="locationDetails">Location Details *</label>
-                        <input type="text" id="locationDetails" name="locationDetails" 
-                               placeholder="Zoom link, Room number, or address" 
-                               required>
-                    </div>
-                </div>
-                
-                <div class="form-group checkbox-group">
-                    <input type="checkbox" id="sendNotification" name="sendNotification" value="yes" checked>
-                    <label for="sendNotification">Send email notification to both participants</label>
-                </div>
-                
-                <div class="form-group checkbox-group">
-                    <input type="checkbox" id="addToCalendar" name="addToCalendar" value="yes" checked>
-                    <label for="addToCalendar">Add to system calendar</label>
+                              placeholder="Any additional notes or agenda items..."></textarea>
                 </div>
                 
                 <div class="form-actions">
                     <button type="submit" class="btn-primary">Schedule Session</button>
                     <button type="reset" class="btn-secondary">Clear Form</button>
-                    <a href="list.jsp" class="btn-cancel">Cancel</a>
+                    <a href="<%= request.getContextPath() %>/SessionListServlet" class="btn-cancel">Cancel</a>
                 </div>
             </form>
-            
-            <div class="availability-check">
-                <h2>Mentor Availability Calendar</h2>
-                <div class="calendar-placeholder">
-                    <p>Interactive calendar showing available time slots will appear here</p>
-                    <p>Green slots = Available | Red slots = Busy | Gray slots = Past</p>
-                </div>
-            </div>
         </section>
     </main>
     

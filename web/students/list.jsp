@@ -1,141 +1,94 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.List, com.mentorship.model.Student" %>
+<%
+    if (session.getAttribute("userId") == null) {
+        response.sendRedirect(request.getContextPath() + "/auth/login.jsp");
+        return;
+    }
+    
+    String userRole = (String) session.getAttribute("userRole");
+    List<Student> students = (List<Student>) request.getAttribute("students");
+%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Students List - Student Mentorship Program</title>
-    <link rel="stylesheet" href="../assets/styles.css">
+    <link rel="stylesheet" href="<%= request.getContextPath() %>/assets/css/styles.css">
 </head>
 <body>
     <header>
         <h1>All Students</h1>
-        <p>Purpose: Display all registered students with search and filter capabilities</p>
         <nav>
-            <a href="../dashboard/dashboard.jsp">← Back to Dashboard</a> | 
-            <a href="../index.jsp">Home</a>
+            <a href="<%= request.getContextPath() %>/DashboardServlet">← Back to Dashboard</a> | 
+            <a href="<%= request.getContextPath() %>/index.jsp">sitemap</a> |
+            <a href="<%= request.getContextPath() %>/LogoutServlet">Logout</a>
         </nav>
     </header>
     
     <main>
         <section>
-            <div class="action-bar">
-                <a href="create.jsp" class="btn-primary">+ Register New Student</a>
-            </div>
+            <%-- Success/Error Messages --%>
+            <% if ("created".equals(request.getParameter("success"))) { %>
+                <div class="alert alert-success">Student created successfully!</div>
+            <% } else if ("updated".equals(request.getParameter("success"))) { %>
+                <div class="alert alert-success">Student updated successfully!</div>
+            <% } else if ("deleted".equals(request.getParameter("success"))) { %>
+                <div class="alert alert-success">Student deleted successfully!</div>
+            <% } else if ("nopermission".equals(request.getParameter("error"))) { %>
+                <div class="alert alert-error">You don't have permission to perform this action!</div>
+            <% } %>
             
-            <form action="" method="GET" class="search-form">
-                <h2>Search & Filter Students</h2>
-                
-                <div class="filter-row">
-                    <div class="filter-group">
-                        <label for="searchName">Search by Name</label>
-                        <input type="search" id="searchName" name="searchName" 
-                               placeholder="Enter student name...">
-                    </div>
-                    
-                    <div class="filter-group">
-                        <label for="filterDepartment">Department</label>
-                        <select id="filterDepartment" name="filterDepartment">
-                            <option value="">All Departments</option>
-                            <option value="Computer Science">Computer Science</option>
-                            <option value="Engineering">Engineering</option>
-                            <option value="Business">Business</option>
-                            <option value="Mathematics">Mathematics</option>
-                            <option value="Physics">Physics</option>
-                            <option value="Chemistry">Chemistry</option>
-                            <option value="Biology">Biology</option>
-                            <option value="Arts">Arts</option>
-                        </select>
-                    </div>
-                    
-                    <div class="filter-group">
-                        <label for="filterYear">Year Level</label>
-                        <select id="filterYear" name="filterYear">
-                            <option value="">All Years</option>
-                            <option value="1">Year 1</option>
-                            <option value="2">Year 2</option>
-                            <option value="3">Year 3</option>
-                            <option value="4">Year 4</option>
-                            <option value="5">Year 5+</option>
-                        </select>
-                    </div>
-                    
-                    <div class="filter-group">
-                        <label for="filterStatus">Mentorship Status</label>
-                        <select id="filterStatus" name="filterStatus">
-                            <option value="">All Status</option>
-                            <option value="matched">Matched</option>
-                            <option value="unmatched">Unmatched</option>
-                            <option value="pending">Pending</option>
-                        </select>
-                    </div>
+            <%-- Only Admin can create students --%>
+            <% if ("admin".equals(userRole)) { %>
+                <div class="action-bar">
+                    <a href="<%= request.getContextPath() %>/StudentCreateServlet" class="btn-primary">+ Register New Student</a>
                 </div>
-                
-                <div class="filter-actions">
-                    <button type="submit" class="btn-primary">Search</button>
-                    <button type="reset" class="btn-secondary">Clear Filters</button>
-                </div>
-            </form>
+            <% } %>
             
             <div class="table-container">
-                <h2>Student Records</h2>
+                <h2>Student Records (<%= students != null ? students.size() : 0 %>)</h2>
                 <table class="data-table">
                     <thead>
                         <tr>
-                            <th>Student ID</th>
+                            <th>Student Number</th>
                             <th>Name</th>
                             <th>Email</th>
                             <th>Department</th>
                             <th>Year Level</th>
-                            <th>Mentorship Status</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>STU2025001</td>
-                            <td>John Doe</td>
-                            <td>john.doe@university.edu</td>
-                            <td>Computer Science</td>
-                            <td>Year 2</td>
-                            <td><span class="badge badge-success">Matched</span></td>
-                            <td class="actions">
-                                <a href="details.jsp" class="btn-sm btn-info">View</a>
-                                <a href="edit.jsp" class="btn-sm btn-warning">Edit</a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>STU2025002</td>
-                            <td>Jane Smith</td>
-                            <td>jane.smith@university.edu</td>
-                            <td>Engineering</td>
-                            <td>Year 3</td>
-                            <td><span class="badge badge-warning">Pending</span></td>
-                            <td class="actions">
-                                <a href="details.jsp" class="btn-sm btn-info">View</a>
-                                <a href="edit.jsp" class="btn-sm btn-warning">Edit</a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>STU2025003</td>
-                            <td>Mike Johnson</td>
-                            <td>mike.j@university.edu</td>
-                            <td>Business</td>
-                            <td>Year 1</td>
-                            <td><span class="badge badge-danger">Unmatched</span></td>
-                            <td class="actions">
-                                <a href="details.jsp" class="btn-sm btn-info">View</a>
-                                <a href="edit.jsp" class="btn-sm btn-warning">Edit</a>
-                            </td>
-                        </tr>
+                        <% if (students != null && !students.isEmpty()) {
+                            for (Student student : students) { %>
+                                <tr>
+                                    <td><%= student.getStudentNumber() %></td>
+                                    <td><%= student.getFullName() %></td>
+                                    <td><%= student.getEmail() %></td>
+                                    <td><%= student.getDepartment() %></td>
+                                    <td>Year <%= student.getYearLevel() %></td>
+                                    <td class="actions">
+                                        <a href="<%= request.getContextPath() %>/StudentDetailsServlet?id=<%= student.getStudentId() %>" class="btn-sm btn-info">View</a>
+                                        
+                                        <%-- Only Admin can Edit and Delete --%>
+                                        <% if ("admin".equals(userRole)) { %>
+                                            <a href="<%= request.getContextPath() %>/StudentEditServlet?id=<%= student.getStudentId() %>" class="btn-sm btn-warning">Edit</a>
+                                            <a href="<%= request.getContextPath() %>/StudentDeleteServlet?id=<%= student.getStudentId() %>" 
+                                               class="btn-sm btn-danger" 
+                                               onclick="return confirm('Are you sure you want to delete this student?')">Delete</a>
+                                        <% } %>
+                                    </td>
+                                </tr>
+                            <% }
+                        } else { %>
+                            <tr>
+                                <td colspan="6" style="text-align: center;">No students found</td>
+                            </tr>
+                        <% } %>
                     </tbody>
                 </table>
-                
-                <div class="pagination">
-                    <button class="btn-secondary" disabled>Previous</button>
-                    <span class="page-info">Page 1 of 10</span>
-                    <button class="btn-secondary">Next</button>
-                </div>
             </div>
         </section>
     </main>
